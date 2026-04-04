@@ -1,5 +1,4 @@
 """Tests for engine stubs — verify deterministic outputs."""
-import pytest
 from astralstory.engine.scene_engine import generate_scene
 from astralstory.engine.world_engine import build_world
 from astralstory.engine.agent_engine import run_agent

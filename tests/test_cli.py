@@ -1,6 +1,5 @@
 """Tests for AstralStory CLI commands using Typer test client."""
 import json
-import pytest
 from typer.testing import CliRunner
 from astralstory.cli.main import app
 

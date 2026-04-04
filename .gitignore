@@ -15,3 +15,7 @@ venv/
 
 # Pytest cache
 .pytest_cache/
+
+
+#Ignore vscode AI rules
+.github\instructions\codacy.instructions.md
