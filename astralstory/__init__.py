@@ -1,0 +1,1 @@
+# AstralStory — deterministic creative engine
