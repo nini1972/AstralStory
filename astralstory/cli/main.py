@@ -6,6 +6,9 @@ from .agent import agent_app
 from .bridge import bridge_app
 from rich.console import Console
 from astralstory.cli.state import state
+from astralstory.cli.animation import run_startup_animation
+from .diagnostics import diagnostics_app
+from .dashboard import dashboard_app
 
 
 console = Console()
@@ -25,21 +28,30 @@ def main(
         "--quiet",
         "-q",
         help="Suppress banners and non-essential output."
-    )
+    ),
+    fast_boot: bool = typer.Option(False, "--fast-boot", "-f", help="Skip startup animation but show banner.")
+
 ):
     """
     Global options for AstralStory CLI.
     """
     state.verbose = verbose
     state.quiet = quiet
+    state.fast_boot = fast_boot
 
-    if not quiet:
+    if quiet:
+        return
+    else:
+        if not fast_boot:
+            run_startup_animation()
         console.print(astral_panel("ASTRALSTORY — OPERATOR CONSOLE"))
 
 app.add_typer(scene_app, name="scene")
 app.add_typer(world_app, name="world")
 app.add_typer(agent_app, name="agent")
 app.add_typer(bridge_app, name="bridge")
+app.add_typer(diagnostics_app, name="diagnostics")
+app.add_typer(dashboard_app, name="dashboard")
 
 def run():
     app()
