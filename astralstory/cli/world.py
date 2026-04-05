@@ -2,6 +2,7 @@ import typer
 from rich.console import Console
 from astralstory.engine.world_engine import build_world
 from astralstory.cli.styling import AstralTyper, astral_panel
+from astralstory.cli.state import state
 
 world_app = AstralTyper(
     help="Tools for constructing, shaping, and exporting AstralStory worlds."
@@ -27,7 +28,7 @@ def build(
         astralstory world build --template nebula-garden
     """
     if not state.quiet:
-            console.print(astral_panel("WORLD BUILDING"))
+        console.print(astral_panel("WORLD BUILDING"))
 
     if state.verbose:
         console.log("[cyan]Building world with detailed diagnostics...[/cyan]")

@@ -1,3 +1,4 @@
+import typer
 from astralstory.cli.styling import AstralTyper, astral_panel
 from .scene import scene_app
 from .world import world_app

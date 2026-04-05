@@ -2,6 +2,7 @@ import typer
 from rich.console import Console
 from astralstory.engine.agent_engine import run_agent
 from astralstory.cli.styling import AstralTyper, astral_panel
+from astralstory.cli.state import state
 
 agent_app = AstralTyper(
     help="Run, evaluate, and interact with AstralStory agents."

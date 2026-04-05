@@ -1,9 +1,8 @@
 import typer
 from rich.console import Console
-from typer.cli import state
-from astralstory.cli import scene
 from astralstory.engine.bridge_engine import sync_bridge
 from astralstory.cli.styling import AstralTyper, astral_panel
+from astralstory.cli.state import state
 
 bridge_app = AstralTyper(
     help="Synchronize AstralStory with external systems and mission kernels."
