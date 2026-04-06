@@ -1,14 +1,16 @@
 import typer
+from typing import Any, Callable
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
 from astralstory.cli.styling import AstralTyper, astral_panel
 from astralstory.cli.state import state
+from astralstory.cli.shell_history import shell_history
 from astralstory.engine.scene_engine import generate_scene
 from astralstory.engine.world_engine import build_world
 from astralstory.engine.agent_engine import run_agent
 from astralstory.engine.bridge_engine import sync_bridge
-from astralstory.cli.diagnostics import gather_diagnostics
+from astralstory.cli.diagnostics import gather_diagnostics, gather_diagnostics_json
 
 shell_app = AstralTyper(help="Interactive AstralStory operator shell.")
 
@@ -39,43 +41,39 @@ COMMAND_USAGE: dict[str, tuple[str, str]] = {
 }
 
 
-def _cmd_scene(args: list[str]) -> None:
+def _cmd_scene(args: list[str]) -> tuple[str, Any]:
     if len(args) < 2:
-        console.print("[yellow]Usage: scene <character> <emotion>[/yellow]")
-        return
-    console.print_json(data=generate_scene(args[0], args[1]))
+        return "error", {"error": "Usage: scene <character> <emotion>"}
+    return "ok", generate_scene(args[0], args[1])
 
 
-def _cmd_world(args: list[str]) -> None:
+def _cmd_world(args: list[str]) -> tuple[str, Any]:
     if not args:
-        console.print("[yellow]Usage: world <template>[/yellow]")
-        return
-    console.print_json(data=build_world(args[0]))
+        return "error", {"error": "Usage: world <template>"}
+    return "ok", build_world(args[0])
 
 
-def _cmd_agent(args: list[str]) -> None:
+def _cmd_agent(args: list[str]) -> tuple[str, Any]:
     if not args:
-        console.print("[yellow]Usage: agent <mission...>[/yellow]")
-        return
-    console.print_json(data=run_agent(" ".join(args)))
+        return "error", {"error": "Usage: agent <mission...>"}
+    return "ok", run_agent(" ".join(args))
 
 
-def _cmd_bridge(args: list[str]) -> None:
+def _cmd_bridge(args: list[str]) -> tuple[str, Any]:
     if not args:
-        console.print("[yellow]Usage: bridge <target>[/yellow]")
-        return
-    console.print_json(data=sync_bridge(args[0]))
+        return "error", {"error": "Usage: bridge <target>"}
+    return "ok", sync_bridge(args[0])
 
 
-def _cmd_diag(_args: list[str]) -> None:
-    console.print(gather_diagnostics())
+def _cmd_diag(_args: list[str]) -> tuple[str, Any]:
+    return "ok", gather_diagnostics_json()
 
 
-def _cmd_help(_args: list[str]) -> None:
-    console.print(Panel(Text.from_markup(HELP_TEXT), border_style="cyan"))
+def _cmd_help(_args: list[str]) -> tuple[str, Any]:
+    return "ok", None  # printing handled by _print_result
 
 
-COMMANDS: dict[str, object] = {
+COMMANDS: dict[str, Callable[[list[str]], tuple[str, Any]]] = {
     "scene": _cmd_scene,
     "world": _cmd_world,
     "agent": _cmd_agent,
@@ -85,8 +83,31 @@ COMMANDS: dict[str, object] = {
 }
 
 
-def _dispatch(line: str) -> bool:
-    """Parse and execute one shell line. Returns False to signal exit."""
+def _print_result(cmd: str, status: str, result: Any) -> None:
+    """Print command output to the console (standalone shell mode only)."""
+    if cmd == "help":
+        console.print(Panel(Text.from_markup(HELP_TEXT), border_style="cyan"))
+        return
+    if cmd == "diag":
+        console.print(gather_diagnostics())
+        return
+    if status == "error":
+        if isinstance(result, dict) and "error" in result:
+            console.print(f"[yellow]{result['error']}[/yellow]")
+        return
+    if result is not None:
+        console.print_json(data=result)
+
+
+def _dispatch(line: str, echo: bool = True) -> bool:
+    """Parse and execute one shell line. Returns False to signal exit.
+
+    Args:
+        line: Raw input line from the user.
+        echo: When True (standalone shell), print output to console.
+              When False (dashboard mode), suppress output — results
+              are surfaced via the shell_history panels only.
+    """
     parts = line.strip().split()
     if not parts:
         return True
@@ -98,10 +119,23 @@ def _dispatch(line: str) -> bool:
 
     handler = COMMANDS.get(cmd)
     if handler is None:
-        console.print(f"[red]Unknown command:[/red] {cmd}  (type [cyan]help[/cyan] for available commands)")
+        if echo:
+            console.print(
+                f"[red]Unknown command:[/red] {cmd}  "
+                f"(type [cyan]help[/cyan] for available commands)"
+            )
+        shell_history.record(cmd, " ".join(args), "error", None)
         return True
 
-    handler(args)  # pylint: disable=not-callable
+    try:
+        status, result = handler(args)
+    except Exception as exc:  # pylint: disable=broad-except
+        status, result = "error", {"error": str(exc)}
+
+    if echo:
+        _print_result(cmd, status, result)
+
+    shell_history.record(cmd, " ".join(args), status, result)
     return True
 
 
@@ -131,6 +165,6 @@ def run_shell():
             console.print("\n[cyan]Shell terminated.[/cyan]")
             break
 
-        if not _dispatch(line):
+        if not _dispatch(line, echo=True):
             console.print("[cyan]Goodbye.[/cyan]")
             break
