@@ -13,13 +13,13 @@ console = Console()
 @scene_app.command("generate")
 def generate(
     character: str = typer.Option(
-        ...,
+        None,
         "--character",
         "-c",
         help="Name of the character featured in the scene (e.g., 'luna')."
     ),
     emotion: str = typer.Option(
-        ...,
+        None,
         "--emotion",
         "-e",
         help="Primary emotion driving the scene (e.g., 'wonder', 'fear', 'hope')."
@@ -35,8 +35,13 @@ def generate(
     Example:
         astralstory scene generate --character luna --emotion wonder
     """
+    if character is None:
+        character = typer.prompt("Character name")
+    if emotion is None:
+        emotion = typer.prompt("Emotion")
+
     if not state.quiet:
-            console.print(astral_panel("SCENE GENERATION"))
+        console.print(astral_panel("SCENE GENERATION"))
 
     if state.verbose:
         console.log("[cyan]Generating scene with detailed diagnostics...[/cyan]")

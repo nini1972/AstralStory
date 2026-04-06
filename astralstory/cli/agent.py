@@ -12,7 +12,7 @@ console = Console()
 @agent_app.command("run")
 def run(
     mission: str = typer.Option(
-        ...,
+        None,
         "--mission",
         "-m",
         help="Mission description the agent should execute (e.g., 'retrieve memory shard')."
@@ -28,8 +28,11 @@ def run(
         astralstory agent run --mission \"retrieve memory shard\"
     """
 
+    if mission is None:
+        mission = typer.prompt("Mission")
+
     if not state.quiet:
-            console.print(astral_panel("AGENT EXECUTION"))
+        console.print(astral_panel("AGENT EXECUTION"))
 
     if state.verbose:
         console.log("[cyan]Executing agent with detailed diagnostics...[/cyan]")

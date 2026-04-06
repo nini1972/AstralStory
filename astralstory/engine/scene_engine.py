@@ -2,9 +2,9 @@ from astralstory.engine.logger import engine_log
 import random
 
 def initialize_scene_engine():
-    engine_log("INFO", "Scene engine initializing")
+    engine_log("INFO", "[SCENE] Scene engine initializing")
     # any setup you want later (loading models, resources, etc.)
-    engine_log("OK", "Scene engine ready")
+    engine_log("OK", "[SCENE] Scene engine ready")
 
 
 
@@ -18,13 +18,13 @@ def generate_scene(character: str, emotion: str) -> dict:
     Returns:
         A dict with keys ``character``, ``emotion``, and ``description``.
     """
-    engine_log("INFO", f"Generating scene for character '{character}' with emotion '{emotion}'")
+    engine_log("INFO", f"[SCENE] Generating scene for character '{character}' with emotion '{emotion}'")
     scene = {
         "character": character,
         "emotion": emotion,
         "description": f"{character} experiences {emotion} under a shimmering astral sky.",
     }
-    engine_log("OK", f"Scene generated for '{character}' with emotion '{emotion}'")
+    engine_log("OK", f"[SCENE] Scene generated for '{character}' with emotion '{emotion}'")
     return scene
 
 def scene_engine_health_check():
@@ -32,9 +32,9 @@ def scene_engine_health_check():
     load = random.randint(1, 100)
 
     if load < 70:
-        engine_log("OK", f"Scene engine healthy (load {load}%)")
+        engine_log("OK", f"[SCENE] Scene engine healthy (load {load}%)")
     elif load < 90:
-        engine_log("WARN", f"Scene engine under stress (load {load}%)")
+        engine_log("WARN", f"[SCENE] Scene engine under stress (load {load}%)")
     else:
-        engine_log("ERROR", f"Scene engine overloaded (load {load}%)")
+        engine_log("ERROR", f"[SCENE] Scene engine overloaded (load {load}%)")
 

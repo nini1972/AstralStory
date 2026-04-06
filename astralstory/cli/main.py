@@ -9,6 +9,7 @@ from astralstory.cli.state import state
 from astralstory.cli.animation import run_startup_animation
 from .diagnostics import diagnostics_app
 from .dashboard import dashboard_app
+from .shell import shell_app
 
 
 console = Console()
@@ -52,6 +53,7 @@ app.add_typer(agent_app, name="agent")
 app.add_typer(bridge_app, name="bridge")
 app.add_typer(diagnostics_app, name="diagnostics")
 app.add_typer(dashboard_app, name="dashboard")
+app.add_typer(shell_app, name="shell")
 
 def run():
     app()

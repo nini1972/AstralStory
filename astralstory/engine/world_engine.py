@@ -2,9 +2,9 @@ from astralstory.engine.logger import engine_log
 import random
 
 def initialize_world_engine():
-    engine_log("INFO", "World engine initializing")
+    engine_log("INFO", "[WORLD] World engine initializing")
     # any setup you want later (loading models, resources, etc.)
-    engine_log("OK", "World engine ready")
+    engine_log("OK", "[WORLD] World engine ready")
     
 def build_world(template: str) -> dict:
     """Build a world from a named template.
@@ -15,7 +15,7 @@ def build_world(template: str) -> dict:
     Returns:
         A dict with keys ``template``, ``status``, and ``details``.
     """
-    engine_log("INFO", f"Building world using template '{template}'")
+    engine_log("INFO", f"[WORLD] Building world using template '{template}'")
 
     world = {
         "template": template,
@@ -23,7 +23,7 @@ def build_world(template: str) -> dict:
         "details": f"World created using template '{template}'.",
     }
 
-    engine_log("OK", f"World built using template '{template}'")
+    engine_log("OK", f"[WORLD] World built using template '{template}'")
     return world
 
 def world_engine_health_check():
@@ -31,8 +31,8 @@ def world_engine_health_check():
     load = random.randint(1, 100)
 
     if load < 70:
-        engine_log("OK", f"World engine healthy (load {load}%)")
+        engine_log("OK", f"[WORLD] World engine healthy (load {load}%)")
     elif load < 90:
-        engine_log("WARN", f"World engine under stress (load {load}%)")
+        engine_log("WARN", f"[WORLD] World engine under stress (load {load}%)")
     else:
-        engine_log("ERROR", f"World engine overloaded (load {load}%)")  
+        engine_log("ERROR", f"[WORLD] World engine overloaded (load {load}%)")  
