@@ -31,11 +31,11 @@ def sync(
     if state.verbose:
         console.log("[cyan]Synchronizing bridge with detailed diagnostics...[/cyan]")
 
-    status = sync_bridge(target)
+    result = sync_bridge(target)
 
     if state.verbose:
-        console.log(f"[magenta]Bridge data: {status}[/magenta]")
+        console.log(f"[magenta]Bridge data: {result}[/magenta]")
 
-    console.print_json(data=status)
+    console.print_json(data=result)
 
    

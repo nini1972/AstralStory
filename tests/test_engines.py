@@ -48,12 +48,15 @@ def test_build_world():
 
 def test_build_world_features_nebula():
     """Nebula templates include nebula-specific features."""
+    from astralstory.engine.world_engine import _WORLD_FEATURE_MAP
     result = build_world("nebula-garden")
     assert "features" in result
     assert isinstance(result["features"], list)
     assert len(result["features"]) > 0
-    # nebula keyword should match at least one feature
-    assert any("cloud" in f or "star" in f or "plasma" in f for f in result["features"])
+    # All returned features must come from the nebula or garden buckets
+    valid_features = set(_WORLD_FEATURE_MAP["nebula"]) | set(_WORLD_FEATURE_MAP["garden"])
+    for feature in result["features"]:
+        assert feature in valid_features, f"Unexpected feature: {feature}"
 
 
 def test_build_world_features_unknown():

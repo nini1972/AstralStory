@@ -16,7 +16,12 @@ _WORLD_FEATURE_MAP = {
 
 
 def _world_features(template: str) -> List[str]:
-    """Return a feature list for the given template, matched by keyword."""
+    """Return a feature list for the given template, matched by keyword.
+
+    Multiple keywords in a single template name will each contribute their
+    feature sets (e.g. ``"nebula-garden"`` accumulates features from both
+    ``"nebula"`` and ``"garden"`` buckets).
+    """
     lower = template.lower()
     features: List[str] = []
     for keyword, feature_list in _WORLD_FEATURE_MAP.items():

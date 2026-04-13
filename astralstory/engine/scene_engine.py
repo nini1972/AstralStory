@@ -12,11 +12,15 @@ _SCENE_TEMPLATES = [
 ]
 
 
-def _pick_scene_template(character: str, emotion: str) -> str:
-    """Select a description template deterministically based on inputs."""
+def _pick_scene_template(character: str, emotion: str) -> tuple:
+    """Select a description template deterministically based on inputs.
+
+    Returns:
+        A tuple of (template_string, 1-based index).
+    """
     seed = f"{character.lower()}:{emotion.lower()}"
     idx = int(hashlib.sha256(seed.encode()).hexdigest(), 16) % len(_SCENE_TEMPLATES)
-    return _SCENE_TEMPLATES[idx]
+    return _SCENE_TEMPLATES[idx], idx + 1
 
 
 def initialize_scene_engine() -> None:
@@ -38,12 +42,12 @@ def generate_scene(character: str, emotion: str) -> dict:
         and ``template_id``.
     """
     engine_log("INFO", f"[SCENE] Generating scene for character '{character}' with emotion '{emotion}'")
-    template = _pick_scene_template(character, emotion)
+    template, template_id = _pick_scene_template(character, emotion)
     scene = {
         "character": character,
         "emotion": emotion,
         "description": template.format(character=character, emotion=emotion),
-        "template_id": (_SCENE_TEMPLATES.index(template) + 1),
+        "template_id": template_id,
     }
     engine_log("OK", f"[SCENE] Scene generated for '{character}' with emotion '{emotion}'")
     return scene

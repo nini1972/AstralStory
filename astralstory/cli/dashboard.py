@@ -175,7 +175,7 @@ def _handle_keyboard_input(live: Live) -> bool:
         import msvcrt
         has_input = msvcrt.kbhit()
     except ImportError:
-        # Unix/macOS: non-blocking stdin poll via select
+        # Unix/macOS: timeout=0 makes select a non-blocking poll, mirroring msvcrt.kbhit()
         readable, _, _ = select.select([sys.stdin], [], [], 0)
         has_input = bool(readable)
 
