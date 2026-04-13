@@ -11,10 +11,8 @@ console = Console()
 
 @world_app.command("build")
 def build(
-    template: str = typer.Option(
-        None,
-        "--template",
-        "-t",
+    template: str = typer.Argument(
+        ...,
         help="Name of the world template to use (e.g., 'nebula-garden', 'crystal-dunes')."
     )
 ):
@@ -25,12 +23,9 @@ def build(
     selected template. Ideal for pipelines, agent workflows, and world previews.
 
     Example:
-        astralstory world build --template nebula-garden
+        astralstory world build nebula-garden
     """
-    if template is None:
-        template = typer.prompt("World template")
-
-    if not state.quiet:
+    if not state.quiet and console.is_terminal:
         console.print(astral_panel("WORLD BUILDING"))
 
     if state.verbose:

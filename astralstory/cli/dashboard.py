@@ -1,5 +1,6 @@
 import json
-import msvcrt
+import select
+import sys
 import time
 import typer
 import psutil
@@ -166,8 +167,19 @@ def _handle_keyboard_input(live: Live) -> bool:
 
     Stops the Live display, captures a full input line, then restarts the
     display. Returns True when the user types 'exit' or 'quit'.
+
+    Uses ``msvcrt.kbhit`` on Windows and ``select`` on Linux/macOS so that
+    the dashboard is fully cross-platform.
     """
-    if not msvcrt.kbhit():
+    try:
+        import msvcrt
+        has_input = msvcrt.kbhit()
+    except ImportError:
+        # Unix/macOS: timeout=0 makes select a non-blocking poll, mirroring msvcrt.kbhit()
+        readable, _, _ = select.select([sys.stdin], [], [], 0)
+        has_input = bool(readable)
+
+    if not has_input:
         return False
     live.stop()
     try:

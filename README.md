@@ -61,7 +61,43 @@ astralstory bridge sync mars-kernel
 {
   "character": "luna",
   "emotion": "wonder",
-  "description": "luna experiences wonder under a shimmering astral sky."
+  "description": "luna stands at the edge of the cosmos, feeling wonder wash over their spirit.",
+  "template_id": 3
+}
+```
+
+### Example output — `world build`
+
+```json
+{
+  "template": "nebula-prime",
+  "status": "world-built",
+  "details": "World created using template 'nebula-prime'.",
+  "features": ["shimmering gas clouds", "newborn star clusters", "ionized plasma rivers", "foundational ley lines", "origin-event echoes", "stabilized reality anchors"]
+}
+```
+
+### Example output — `agent run`
+
+```json
+{
+  "mission": "explore-sector-7",
+  "result": "mission-complete",
+  "notes": "Agent executed mission deterministically.",
+  "steps_taken": 1,
+  "outcome": "All 1 mission step(s) resolved successfully."
+}
+```
+
+### Example output — `bridge sync`
+
+```json
+{
+  "target": "mars-kernel",
+  "status": "synced",
+  "details": "Bridge synchronized with mars-kernel.",
+  "protocol": "AstralBridge-v1",
+  "latency_ms": 0
 }
 ```
 
@@ -81,7 +117,8 @@ astralstory/
     ├── scene_engine.py
     ├── world_engine.py
     ├── agent_engine.py
-    └── bridge_engine.py
+    ├── bridge_engine.py
+    └── logger.py
 tests/
 ├── test_cli.py     # CLI integration tests (Typer test runner)
 └── test_engines.py # Engine unit tests
