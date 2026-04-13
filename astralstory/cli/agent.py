@@ -11,10 +11,8 @@ console = Console()
 
 @agent_app.command("run")
 def run(
-    mission: str = typer.Option(
-        None,
-        "--mission",
-        "-m",
+    mission: str = typer.Argument(
+        ...,
         help="Mission description the agent should execute (e.g., 'retrieve memory shard')."
     )
 ):
@@ -25,13 +23,9 @@ def run(
     universe. Useful for testing, pipelines, and narrative automation.
 
     Example:
-        astralstory agent run --mission \"retrieve memory shard\"
+        astralstory agent run "retrieve memory shard"
     """
-
-    if mission is None:
-        mission = typer.prompt("Mission")
-
-    if not state.quiet:
+    if not state.quiet and console.is_terminal:
         console.print(astral_panel("AGENT EXECUTION"))
 
     if state.verbose:

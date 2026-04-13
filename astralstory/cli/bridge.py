@@ -11,10 +11,8 @@ console = Console()
 
 @bridge_app.command("sync")
 def sync(
-    target: str = typer.Option(
-        None,
-        "--target",
-        "-t",
+    target: str = typer.Argument(
+        ...,
         help="Target system to synchronize with (e.g., 'mars-kernel', 'astral-bridge')."
     )
 ):
@@ -25,12 +23,9 @@ def sync(
     connected mission kernels or bridge systems.
 
     Example:
-        astralstory bridge sync --target mars-kernel
+        astralstory bridge sync mars-kernel
     """
-    if target is None:
-        target = typer.prompt("Target system")
-
-    if not state.quiet:
+    if not state.quiet and console.is_terminal:
         console.print(astral_panel("BRIDGE SYNCHRONIZATION"))
 
     if state.verbose:
@@ -39,9 +34,8 @@ def sync(
     status = sync_bridge(target)
 
     if state.verbose:
-            console.log(f"[magenta]Bridge data: {status}[/magenta]")
+        console.log(f"[magenta]Bridge data: {status}[/magenta]")
 
     console.print_json(data=status)
-
 
    

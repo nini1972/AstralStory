@@ -13,6 +13,7 @@ def test_scene_generate():
     assert data["character"] == "luna"
     assert data["emotion"] == "wonder"
     assert "luna" in data["description"]
+    assert "template_id" in data
 
 
 def test_world_build():
@@ -21,6 +22,8 @@ def test_world_build():
     data = json.loads(result.output)
     assert data["template"] == "nebula-prime"
     assert data["status"] == "world-built"
+    assert "features" in data
+    assert isinstance(data["features"], list)
 
 
 def test_agent_run():
@@ -29,6 +32,7 @@ def test_agent_run():
     data = json.loads(result.output)
     assert data["mission"] == "explore-sector-7"
     assert data["result"] == "mission-complete"
+    assert "steps_taken" in data
 
 
 def test_bridge_sync():
@@ -37,6 +41,7 @@ def test_bridge_sync():
     data = json.loads(result.output)
     assert data["target"] == "mars-kernel"
     assert data["status"] == "synced"
+    assert data["protocol"] == "AstralBridge-v1"
 
 
 def test_help():

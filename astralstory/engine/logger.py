@@ -1,9 +1,9 @@
 from collections import deque
 from datetime import datetime
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Optional
 
-LOG_SINK: Callable[[str, str], None] | None = None  # Optional in-process override
+LOG_SINK: Optional[Callable[[str, str], None]] = None  # Optional in-process override
 
 # In-memory ring buffer for the dashboard (single-process reads)
 LOG_BUFFER: deque[str] = deque(maxlen=50)
@@ -17,7 +17,7 @@ def engine_log(level: str, message: str) -> None:
     Engines call this to emit logs.
     Always writes to LOG_FILE and LOG_BUFFER; also calls LOG_SINK if set.
     """
-    timestamp = datetime.now().strftime("%H:%M:%S")
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     line = f"[{timestamp}] [{level}] {message}"
 
     LOG_BUFFER.append(line)

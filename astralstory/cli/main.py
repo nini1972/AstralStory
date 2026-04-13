@@ -42,10 +42,11 @@ def main(
 
     if quiet:
         return
-    else:
-        if not fast_boot:
-            run_startup_animation()
-        console.print(astral_panel("ASTRALSTORY — OPERATOR CONSOLE"))
+    if not console.is_terminal:
+        return  # suppress decorative output when stdout is not a terminal (piped/test)
+    if not fast_boot:
+        run_startup_animation()
+    console.print(astral_panel("ASTRALSTORY — OPERATOR CONSOLE"))
 
 app.add_typer(scene_app, name="scene")
 app.add_typer(world_app, name="world")

@@ -40,7 +40,7 @@ def generate(
     if emotion is None:
         emotion = typer.prompt("Emotion")
 
-    if not state.quiet:
+    if not state.quiet and console.is_terminal:
         console.print(astral_panel("SCENE GENERATION"))
 
     if state.verbose:
